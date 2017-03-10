@@ -6,42 +6,29 @@ var source = require('vinyl-source-stream');
 var watchify = require('watchify');
 var browserSync = require('browser-sync').create();
 var concat = require('gulp-concat');
+var imagemin = require('gulp-imagemin');
 
-gulp.task('browserSync', function() {
-
-	browserSync.init({
-		server: { baseDir: 'dest' },
-	});
-
-});
-
-gulp.task('watch', ['browserSync'], function(){
+gulp.task('watch', ['default'], function(){
 
 	gulp.watch('src/styles/**/*.less', ['less']);
 	gulp.watch('src/**/*.html', ['copy-html']);
-	gulp.watch('src/scripts/**/*.js', ['browserify']);
+	gulp.watch('src/scripts/**/*.js', ['browserify', 'vendor']);
 
 });
 
 gulp.task('less', function(){
 
-	gulp.src('src/styles/**/*.less')
+	gulp.src('src/styles/main.less')
 		.pipe(less())
 		.pipe(concat('main.css'))
-		.pipe(gulp.dest('dest/styles/'))
-		.pipe(browserSync.reload({
-			stream: true
-		}));
+		.pipe(gulp.dest('public/styles/'));
 
 });
 
 gulp.task('copy-html', function(){
 
 	gulp.src('src/**/*.html')
-		.pipe(gulp.dest('dest/'))
-		.pipe(browserSync.reload({
-			stream: true
-		}));
+		.pipe(gulp.dest('public/'));
 
 });
 
@@ -52,10 +39,34 @@ gulp.task('browserify', function(){
 			.on('error', function(e){
 				gutil.log(e);
 			})
-			.pipe(source('bundle.js'))
-			.pipe(gulp.dest('./dest/scripts/'))
-			.pipe(browserSync.reload({
-				stream: true
-			}));;
+			.pipe(source('main.bundle.js'))
+			.pipe(gulp.dest('./public/scripts/'));
 
 });
+
+gulp.task('vendor', function(){
+
+	return 	browserify('./src/scripts/vendor.js')
+			.bundle()
+			.on('error', function(e){
+				gutil.log(e);
+			})
+			.pipe(source('vendor.bundle.js'))
+			.pipe(gulp.dest('./public/scripts/'));
+
+});
+
+gulp.task('imagemin', function(){
+	gulp.src('src/assets/*')
+		.pipe(imagemin())
+		.pipe(gulp.dest('public/assets'));
+});
+
+
+gulp.task('default', [
+	'browserify',
+	'copy-html',
+	'imagemin',
+	'vendor',
+	'less'
+]);

@@ -9,17 +9,18 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+  },
+  "devDependencies": {
     "browserify": "^14.0.0",
     "gulp": "^3.9.1",
     "gulp-concat": "^2.6.1",
+    "gulp-imagemin": "^3.1.1",
     "gulp-less": "^3.3.0",
     "gulp-util": "^3.0.8",
     "page": "^1.7.1",
     "request": "^2.79.0",
     "vinyl-source-stream": "^1.1.0",
-    "watchify": "^3.9.0"
-  },
-  "devDependencies": {
+    "watchify": "^3.9.0",
     "browser-sync": "^2.18.6"
   }
 }
