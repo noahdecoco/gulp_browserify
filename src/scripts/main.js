@@ -1,1 +1,1 @@
-console.log("Gulp Bootstrap");
+console.log("Main loaded.");
